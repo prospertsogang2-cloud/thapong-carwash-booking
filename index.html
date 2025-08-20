@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thapong Car Wash & Cafe</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0a4a8d;
+            --secondary: #e6af2e;
+            --accent: #c44949;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #28a745;
+            --warning: #ffc107;
+            --info: #17a2b8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(rgba(10, 74, 141, 0.9), rgba(10, 74, 141, 0.8)), url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3') center/cover;
+            color: white;
+            text-align: center;
+            padding: 60px 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .logo {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .logo span {
+            color: var(--secondary);
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+        
+        .app-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .card-title {
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--secondary);
+        }
+        
+        .service-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .service-option:hover {
+            border-color: var(--primary);
+            background-color: rgba(10, 74, 141, 0.05);
+        }
+        
+        .service-option.selected {
+            border-color: var(--secondary);
+            background-color: rgba(230, 175, 46, 0.1);
+        }
+        
+        .service-info {
+            flex-grow: 1;
+        }
+        
+        .service-name {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .service-desc {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .service-price {
+            font-weight: bold;
+            color: var(--secondary);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--primary);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--secondary);
+            color: var(--dark);
+            padding: 14px 30px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        .status-container {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--secondary);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .status-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin: 30px 0;
+        }
+        
+        .status-step {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .status-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+        }
+        
+        .status-step.active .status-icon {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+        
+        .status-step.completed .status-icon {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+        
+        .status-steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #ddd;
+            z-index: 1;
+        }
+        
+        .cafe-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .cafe-item {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .cafe-item:hover {
+            border-color: var(--primary);
+        }
+        
+        .cafe-item.selected {
+            border-color: var(--secondary);
+            background: rgba(230, 175, 46, 0.1);
+        }
+        
+        .cafe-item img {
+            max-width: 100%;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background: white;
+            border-left: 4px solid var(--success);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .timer {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .app-content {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                padding: 40px 20px;
+            }
+            
+            .logo {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo">THAPONG <span>CAR WASH</span></div>
+            <div class="tagline">WASH-AND-DINE ECOSYSTEM</div>
+            <p>Integrated with Thabong Cafe for your convenience</p>
+        </header>
+        
+        <div class="app-content">
+            <div class="left-panel">
+                <div class="card">
+                    <h2 class="card-title">1. Select Car Wash Service</h2>
+                    
+                    <div class="service-option" onclick="selectService(this, 'express')">
+                        <div class="service-info">
+                            <div class="service-name">Express Exterior</div>
+                            <div class="service-desc">Quick wash and dry (15 min)</div>
+                        </div>
+                        <div class="service-price">P 99</div>
+                    </div>
+                    
+                    <div class="service-option" onclick="selectService(this, 'interior')">
+                        <div class="service-info">
+                            <div class="service-name">Interior Deluxe</div>
+                            <div class="service-desc">Deep clean and conditioning (20 min)</div>
+                        </div>
+                        <div class="service-price">P 199</div>
+                    </div>
+                    
+                    <div class="service-option" onclick="selectService(this, 'super')">
+                        <div class="service-info">
+                            <div class="service-name">Super Shine Package</div>
+                            <div class="service-desc">Exterior wash and wax (25 min)</div>
+                        </div>
+                        <div class="service-price">P 249</div>
+                    </div>
+                    
+                    <div class="service-option" onclick="selectService(this, 'ultimate')">
+                        <div class="service-info">
+                            <div class="service-name">Ultimate Package</div>
+                            <div class="service-desc">Complete interior and exterior (30 min)</div>
+                        </div>
+                        <div class="service-price">P 399</div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2 class="card-title">2. Pre-order from Thabong Cafe</h2>
+                    <p>Your order will be ready when your car wash is complete</p>
+                    
+                    <div class="cafe-items">
+                        <div class="cafe-item" onclick="selectCafeItem(this, 'cappuccino')">
+                            <img src="https://images.unsplash.com/photo-1534778101976-62847782c213?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Cappuccino">
+                            <div>Cappuccino</div>
+                            <div class="service-price">P 25</div>
+                        </div>
+                        
+                        <div class="cafe-item" onclick="selectCafeItem(this, 'croissant')">
+                            <img src="https://images.unsplash.com/photo-1555507036-ab794f24d6c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Croissant">
+                            <div>Croissant</div>
+                            <div class="service-price">P 35</div>
+                        </div>
+                        
+                        <div class="cafe-item" onclick="selectCafeItem(this, 'sandwich')">
+                            <img src="https://images.unsplash.com/photo-1567234669003-dce7a7a88821?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Sandwich">
+                            <div>Sandwich</div>
+                            <div class="service-price">P 65</div>
+                        </div>
+                        
+                        <div class="cafe-item" onclick="selectCafeItem(this, 'smoothie')">
+                            <img src="https://images.unsplash.com/photo-1511924777677-5347db9c0c15?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Smoothie">
+                            <div>Fruit Smoothie</div>
+                            <div class="service-price">P 45</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="right-panel">
+                <div class="card">
+                    <h2 class="card-title">3. Customer Information</h2>
+                    
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" class="form-control" placeholder="Your name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" class="form-control" placeholder="Your phone number">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="vehicle">Vehicle Details</label>
+                        <input type="text" id="vehicle" class="form-control" placeholder="Make, model, color">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="time">Preferred Time</label>
+                        <input type="datetime-local" id="time" class="form-control">
+                    </div>
+                    
+                    <button class="btn btn-block" onclick="bookService()">Book Now & Pre-order</button>
+                </div>
+                
+                <div class="card">
+                    <h2 class="card-title">Service Status</h2>
+                    <div id="status-container">
+                        <p class="text-center">Your service status will appear here once booked</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="notification" id="notification">
+            <i class="fas fa-check-circle"></i> <span id="notification-text">Your booking has been confirmed!</span>
+        </div>
+    </div>
+
+    <script>
+        // Current booking state
+        let bookingState = {
+            service: null,
+            cafeItems: [],
+            customerInfo: {},
+            status: 'not_started',
+            progress: 0,
+            timeRemaining: 0,
+            totalTime: 0
+        };
+        
+        // DOM Elements
+        const statusContainer = document.getElementById('status-container');
+        const notification = document.getElementById('notification');
+        const notificationText = document.getElementById('notification-text');
+        
+        // Select a car wash service
+        function selectService(element, serviceType) {
+            // Remove selected class from all services
+            document.querySelectorAll('.service-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked service
+            element.classList.add('selected');
+            
+            // Update booking state
+            bookingState.service = serviceType;
+            
+            // Set estimated time based on service
+            if (serviceType === 'express') {
+                bookingState.totalTime = 15 * 60; // 15 minutes in seconds
+            } else if (serviceType === 'interior') {
+                bookingState.totalTime = 20 * 60;
+            } else if (serviceType === 'super') {
+                bookingState.totalTime = 25 * 60;
+            } else if (serviceType === 'ultimate') {
+                bookingState.totalTime = 30 * 60;
+            }
+        }
+        
+        // Select cafe item
+        function selectCafeItem(element, item) {
+            element.classList.toggle('selected');
+            
+            if (element.classList.contains('selected')) {
+                bookingState.cafeItems.push(item);
+            } else {
+                bookingState.cafeItems = bookingState.cafeItems.filter(i => i !== item);
+            }
+        }
+        
+        // Book the service
+        function bookService() {
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const vehicle = document.getElementById('vehicle').value;
+            const time = document.getElementById('time').value;
+            
+            if (!bookingState.service) {
+                showNotification('Please select a car wash service');
+                return;
+            }
+            
+            if (!name || !phone || !vehicle) {
+                showNotification('Please fill in all customer information');
+                return;
+            }
+            
+            bookingState.customerInfo = { name, phone, vehicle, time };
+            bookingState.status = 'scheduled';
+            
+            // Show booking confirmation
+            showNotification('Your wash and dine experience has been booked!');
+            
+            // Update UI to show status
+            renderStatus();
+            
+            // Simulate starting the service after a delay
+            setTimeout(startService, 3000);
+        }
+        
+        // Start the service
+        function startService() {
+            bookingState.status = 'in_progress';
+            bookingState.timeRemaining = bookingState.totalTime;
+            renderStatus();
+            
+            // Start the countdown timer
+            const countdown = setInterval(() => {
+                bookingState.timeRemaining--;
+                bookingState.progress = ((bookingState.totalTime - bookingState.timeRemaining) / bookingState.totalTime) * 100;
+                
+                renderStatus();
+                
+                if (bookingState.timeRemaining <= 0) {
+                    clearInterval(countdown);
+                    completeService();
+                }
+            }, 1000);
+        }
+        
+        // Complete the service
+        function completeService() {
+            bookingState.status = 'completed';
+            renderStatus();
+            showNotification('Your car wash is complete and your cafe order is ready!');
+        }
+        
+        // Render service status
+        function renderStatus() {
+            if (bookingState.status === 'not_started') {
+                statusContainer.innerHTML = '<p class="text-center">Your service status will appear here once booked</p>';
+                return;
+            }
+            
+            let statusHTML = '';
+            
+            if (bookingState.status === 'scheduled') {
+                statusHTML = `
+                    <div class="text-center">
+                        <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--success);"></i>
+                        <h3>Booking Confirmed!</h3>
+                        <p>Your wash and dine experience is scheduled</p>
+                    </div>
+                `;
+            } else if (bookingState.status === 'in_progress') {
+                const minutes = Math.floor(bookingState.timeRemaining / 60);
+                const seconds = bookingState.timeRemaining % 60;
+                
+                statusHTML = `
+                    <h3>Service In Progress</h3>
+                    <div class="timer">${minutes}:${seconds < 10 ? '0' : ''}${seconds}</div>
+                    
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${bookingState.progress}%"></div>
+                    </div>
+                    
+                    <div class="status-steps">
+                        <div class="status-step completed">
+                            <div class="status-icon"><i class="fas fa-check"></i></div>
+                            <div>Booked</div>
+                        </div>
+                        
+                        <div class="status-step active">
+                            <div class="status-icon"><i class="fas fa-spinner"></i></div>
+                            <div>Washing</div>
+                        </div>
+                        
+                        <div class="status-step">
+                            <div class="status-icon"><i class="fas fa-coffee"></i></div>
+                            <div>Cafe Order</div>
+                        </div>
+                        
+                        <div class="status-step">
+                            <div class="status-icon"><i class="fas fa-car"></i></div>
+                            <div>Ready</div>
+                        </div>
+                    </div>
+                    
+                    <div class="cafe-notification">
+                        <i class="fas fa-info-circle"></i>
+                        <p>Your cafe order is being prepared and will be ready when your car is done.</p>
+                    </div>
+                `;
+            } else if (bookingState.status === 'completed') {
+                statusHTML = `
+                    <div class="text-center">
+                        <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--success);"></i>
+                        <h3>Service Complete!</h3>
+                        <p>Your car is ready and your cafe order is waiting for you at Thabong Cafe.</p>
+                        
+                        <div class="completed-details">
+                            <h4>Service Summary</h4>
+                            <p>Car Wash: ${getServiceName(bookingState.service)}</p>
+                            <p>Cafe Order: ${bookingState.cafeItems.map(item => getItemName(item)).join(', ') || 'None'}</p>
+                            <p>Total: P ${calculateTotal()}.00</p>
+                        </div>
+                        
+                        <button class="btn" style="margin-top: 20px;">Rate Your Experience</button>
+                    </div>
+                `;
+            }
+            
+            statusContainer.innerHTML = statusHTML;
+        }
+        
+        // Helper function to get service name
+        function getServiceName(serviceType) {
+            const services = {
+                'express': 'Express Exterior',
+                'interior': 'Interior Deluxe',
+                'super': 'Super Shine Package',
+                'ultimate': 'Ultimate Package'
+            };
+            
+            return services[serviceType] || 'Unknown Service';
+        }
+        
+        // Helper function to get item name
+        function getItemName(itemType) {
+            const items = {
+                'cappuccino': 'Cappuccino',
+                'croissant': 'Croissant',
+                'sandwich': 'Sandwich',
+                'smoothie': 'Fruit Smoothie'
+            };
+            
+            return items[itemType] || 'Unknown Item';
+        }
+        
+        // Calculate total price
+        function calculateTotal() {
+            let total = 0;
+            
+            // Add service price
+            if (bookingState.service === 'express') total += 99;
+            else if (bookingState.service === 'interior') total += 199;
+            else if (bookingState.service === 'super') total += 249;
+            else if (bookingState.service === 'ultimate') total += 399;
+            
+            // Add cafe items
+            bookingState.cafeItems.forEach(item => {
+                if (item === 'cappuccino') total += 25;
+                else if (item === 'croissant') total += 35;
+                else if (item === 'sandwich') total += 65;
+                else if (item === 'smoothie') total += 45;
+            });
+            
+            return total;
+        }
+        
+        // Show notification
+        function showNotification(message) {
+            notificationText.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Initialize the app
+        function initApp() {
+            // Set default datetime to current time + 30 minutes
+            const now = new Date();
+            now.setMinutes(now.getMinutes() + 30);
+            document.getElementById('time').value = now.toISOString().slice(0, 16);
+        }
+        
+        // Initialize when page loads
+        window.onload = initApp;
+    </script>
+</body>
+</html>
