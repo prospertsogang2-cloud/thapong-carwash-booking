@@ -505,7 +505,39 @@
             
             bookingState.customerInfo = { name, phone, vehicle, time };
             bookingState.status = 'scheduled';
-            
+
+            // After creating the booking object in bookService() function
+// Add this code:
+
+// Get existing bookings from local storage or initialize empty array
+let existingBookings = JSON.parse(localStorage.getItem('thapongBookings')) || [];
+
+// Add new booking to the array
+existingBookings.unshift(booking);
+
+// Save back to local storage
+localStorage.setItem('thapongBookings', JSON.stringify(existingBookings));
+
+// Show confirmation
+showNotification('Your wash and dine experience has been booked! Our team will confirm shortly.');
+
+// Reset the form
+document.getElementById('name').value = '';
+document.getElementById('phone').value = '';
+document.getElementById('vehicle').value = '';
+document.getElementById('time').value = '';
+
+// Reset service selection
+bookingState.service = null;
+document.querySelectorAll('.service-option.selected').forEach(item => {
+    item.classList.remove('selected');
+});
+
+// Reset cafe items selection
+bookingState.cafeItems = [];
+document.querySelectorAll('.cafe-item.selected').forEach(item => {
+    item.classList.remove('selected');
+});
             // Show booking confirmation
             showNotification('Your wash and dine experience has been booked!');
             
