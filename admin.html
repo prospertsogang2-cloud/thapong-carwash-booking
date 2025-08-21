@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thapong Car Wash - Booking Management</title>
+    <title>Thapong Car Wash - Admin Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -42,7 +42,6 @@
             background: var(--primary);
             color: white;
             padding: 20px 0;
-            transition: all 0.3s ease;
         }
         
         .logo {
@@ -410,6 +409,18 @@
                 overflow-x: auto;
             }
         }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray);
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #ddd;
+        }
     </style>
 </head>
 <body>
@@ -418,7 +429,7 @@
         <div class="sidebar">
             <div class="logo">
                 <h1>THAPONG <span>CAR WASH</span></h1>
-                <p>Management System</p>
+                <p>Admin Dashboard</p>
             </div>
             
             <ul class="nav-links">
@@ -438,10 +449,10 @@
             <div class="header">
                 <h2>Booking Management Dashboard</h2>
                 <div class="filters">
-                    <button class="filter-btn active">Today</button>
-                    <button class="filter-btn">This Week</button>
-                    <button class="filter-btn">This Month</button>
-                    <button class="filter-btn">All</button>
+                    <button class="filter-btn active" onclick="filterBookings('all')">All</button>
+                    <button class="filter-btn" onclick="filterBookings('pending')">Pending</button>
+                    <button class="filter-btn" onclick="filterBookings('confirmed')">Confirmed</button>
+                    <button class="filter-btn" onclick="filterBookings('in-progress')">In Progress</button>
                 </div>
             </div>
             
@@ -452,7 +463,7 @@
                         <i class="fas fa-calendar-check"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>24</h3>
+                        <h3 id="total-bookings">0</h3>
                         <p>Total Bookings</p>
                     </div>
                 </div>
@@ -462,7 +473,7 @@
                         <i class="fas fa-spinner"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>8</h3>
+                        <h3 id="in-progress">0</h3>
                         <p>In Progress</p>
                     </div>
                 </div>
@@ -472,7 +483,7 @@
                         <i class="fas fa-check-circle"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>14</h3>
+                        <h3 id="completed">0</h3>
                         <p>Completed</p>
                     </div>
                 </div>
@@ -482,7 +493,7 @@
                         <i class="fas fa-money-bill-wave"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>P 5,240</h3>
+                        <h3 id="revenue">P 0</h3>
                         <p>Total Revenue</p>
                     </div>
                 </div>
@@ -493,10 +504,10 @@
                 <div class="table-header">
                     <h3>Recent Bookings</h3>
                     <div class="filters">
-                        <button class="filter-btn active">All</button>
-                        <button class="filter-btn">Pending</button>
-                        <button class="filter-btn">Confirmed</button>
-                        <button class="filter-btn">In Progress</button>
+                        <button class="filter-btn active" onclick="filterBookings('all')">All</button>
+                        <button class="filter-btn" onclick="filterBookings('today')">Today</button>
+                        <button class="filter-btn" onclick="filterBookings('week')">This Week</button>
+                        <button class="filter-btn" onclick="filterBookings('month')">This Month</button>
                     </div>
                 </div>
                 
@@ -512,66 +523,14 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>#TW001</td>
-                            <td>James Moloi</td>
-                            <td>Ultimate Package</td>
-                            <td>Jul 25, 2023 - 10:00 AM</td>
-                            <td>Toyota Hilux (ABC 123 EC)</td>
-                            <td><span class="status-badge status-in-progress">In Progress</span></td>
-                            <td>
-                                <button class="action-btn btn-view" onclick="viewBooking('TW001')"><i class="fas fa-eye"></i></button>
-                                <button class="action-btn btn-complete" onclick="updateStatus('TW001', 'completed')"><i class="fas fa-check"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#TW002</td>
-                            <td>Sarah Kgosi</td>
-                            <td>Interior Deluxe</td>
-                            <td>Jul 25, 2023 - 10:30 AM</td>
-                            <td>VW Polo (DEF 456 EC)</td>
-                            <td><span class="status-badge status-confirmed">Confirmed</span></td>
-                            <td>
-                                <button class="action-btn btn-view" onclick="viewBooking('TW002')"><i class="fas fa-eye"></i></button>
-                                <button class="action-btn btn-edit" onclick="updateStatus('TW002', 'in-progress')"><i class="fas fa-play"></i></button>
-                                <button class="action-btn btn-cancel" onclick="updateStatus('TW002', 'cancelled')"><i class="fas fa-times"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#TW003</td>
-                            <td>Michael Botha</td>
-                            <td>Super Shine Package</td>
-                            <td>Jul 25, 2023 - 11:00 AM</td>
-                            <td>Ford Ranger (GHI 789 EC)</td>
-                            <td><span class="status-badge status-pending">Pending</span></td>
-                            <td>
-                                <button class="action-btn btn-view" onclick="viewBooking('TW003')"><i class="fas fa-eye"></i></button>
-                                <button class="action-btn btn-edit" onclick="updateStatus('TW003', 'confirmed')"><i class="fas fa-check-circle"></i></button>
-                                <button class="action-btn btn-cancel" onclick="updateStatus('TW003', 'cancelled')"><i class="fas fa-times"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#TW004</td>
-                            <td>Lerato Smith</td>
-                            <td>Express Exterior + Cafe</td>
-                            <td>Jul 25, 2023 - 11:30 AM</td>
-                            <td>BMW 3 Series (JKL 012 EC)</td>
-                            <td><span class="status-badge status-completed">Completed</span></td>
-                            <td>
-                                <button class="action-btn btn-view" onclick="viewBooking('TW004')"><i class="fas fa-eye"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#TW005</td>
-                            <td>David van der Merwe</td>
-                            <td>3 Year Ceramic</td>
-                            <td>Jul 25, 2023 - 12:00 PM</td>
-                            <td>Mercedes C-Class (MNO 345 EC)</td>
-                            <td><span class="status-badge status-in-progress">In Progress</span></td>
-                            <td>
-                                <button class="action-btn btn-view" onclick="viewBooking('TW005')"><i class="fas fa-eye"></i></button>
-                                <button class="action-btn btn-complete" onclick="updateStatus('TW005', 'completed')"><i class="fas fa-check"></i></button>
+                    <tbody id="bookings-table-body">
+                        <tr class="empty-state-row">
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <i class="fas fa-calendar-times"></i>
+                                    <h3>No bookings yet</h3>
+                                    <p>Customer bookings will appear here once they start booking online</p>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -637,141 +596,200 @@
     </div>
 
     <script>
-        // Sample booking data
-        const bookings = {
-            'TW001': {
-                customer: 'James Moloi',
-                phone: '+267 71 123 456',
-                email: 'james.moloi@email.com',
-                service: 'Ultimate Package',
-                vehicle: 'Toyota Hilux (ABC 123 EC)',
-                datetime: 'Jul 25, 2023 - 10:00 AM',
-                status: 'In Progress',
-                cafeOrder: 'Cappuccino, Croissant',
-                requests: 'Extra attention to interior stains',
-                amount: 'P 399'
-            },
-            'TW002': {
-                customer: 'Sarah Kgosi',
-                phone: '+267 72 234 567',
-                email: 'sarah.kgosi@email.com',
-                service: 'Interior Deluxe',
-                vehicle: 'VW Polo (DEF 456 EC)',
-                datetime: 'Jul 25, 2023 - 10:30 AM',
-                status: 'Confirmed',
-                cafeOrder: 'Fruit Smoothie',
-                requests: 'None',
-                amount: 'P 199'
-            },
-            'TW003': {
-                customer: 'Michael Botha',
-                phone: '+267 73 345 678',
-                email: 'michael.botha@email.com',
-                service: 'Super Shine Package',
-                vehicle: 'Ford Ranger (GHI 789 EC)',
-                datetime: 'Jul 25, 2023 - 11:00 AM',
-                status: 'Pending',
-                cafeOrder: 'None',
-                requests: 'Focus on exterior shine',
-                amount: 'P 249'
-            },
-            'TW004': {
-                customer: 'Lerato Smith',
-                phone: '+267 74 456 789',
-                email: 'lerato.smith@email.com',
-                service: 'Express Exterior + Cafe',
-                vehicle: 'BMW 3 Series (JKL 012 EC)',
-                datetime: 'Jul 25, 2023 - 11:30 AM',
-                status: 'Completed',
-                cafeOrder: 'Sandwich, Cappuccino',
-                requests: 'Quick service needed',
-                amount: 'P 164'
-            },
-            'TW005': {
-                customer: 'David van der Merwe',
-                phone: '+267 75 567 890',
-                email: 'david.vdm@email.com',
-                service: '3 Year Ceramic',
-                vehicle: 'Mercedes C-Class (MNO 345 EC)',
-                datetime: 'Jul 25, 2023 - 12:00 PM',
-                status: 'In Progress',
-                cafeOrder: 'Water, Pastry',
-                requests: 'Please be careful with rims',
-                amount: 'P 1299'
+        // This will store all bookings
+        let allBookings = [];
+        let filteredBookings = [];
+
+        // Load bookings from localStorage
+        function loadBookings() {
+            const savedBookings = localStorage.getItem('thapongBookings');
+            if (savedBookings) {
+                allBookings = JSON.parse(savedBookings);
+                filteredBookings = [...allBookings];
+                renderBookings();
+                updateStats();
             }
-        };
-        
+        }
+
+        // Save bookings to localStorage
+        function saveBookings() {
+            localStorage.setItem('thapongBookings', JSON.stringify(allBookings));
+        }
+
+        // Render bookings to the table
+        function renderBookings() {
+            const tbody = document.getElementById('bookings-table-body');
+            
+            if (filteredBookings.length === 0) {
+                tbody.innerHTML = `
+                    <tr class="empty-state-row">
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <i class="fas fa-calendar-times"></i>
+                                <h3>No bookings found</h3>
+                                <p>Try changing your filters or check back later</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            
+            filteredBookings.forEach(booking => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>#${booking.id}</td>
+                    <td>${booking.customer}</td>
+                    <td>${booking.service}</td>
+                    <td>${booking.datetime}</td>
+                    <td>${booking.vehicle}</td>
+                    <td><span class="status-badge status-${booking.status}">${booking.status}</span></td>
+                    <td>
+                        <button class="action-btn btn-view" onclick="viewBooking('${booking.id}')"><i class="fas fa-eye"></i></button>
+                        ${booking.status === 'pending' ? `
+                            <button class="action-btn btn-edit" onclick="updateStatus('${booking.id}', 'confirmed')"><i class="fas fa-check-circle"></i></button>
+                            <button class="action-btn btn-cancel" onclick="updateStatus('${booking.id}', 'cancelled')"><i class="fas fa-times"></i></button>
+                        ` : ''}
+                        ${booking.status === 'confirmed' ? `
+                            <button class="action-btn btn-edit" onclick="updateStatus('${booking.id}', 'in-progress')"><i class="fas fa-play"></i></button>
+                        ` : ''}
+                        ${booking.status === 'in-progress' ? `
+                            <button class="action-btn btn-complete" onclick="updateStatus('${booking.id}', 'completed')"><i class="fas fa-check"></i></button>
+                        ` : ''}
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Update statistics
+        function updateStats() {
+            const totalBookings = allBookings.length;
+            const inProgress = allBookings.filter(b => b.status === 'in-progress').length;
+            const completed = allBookings.filter(b => b.status === 'completed').length;
+            const revenue = allBookings.filter(b => b.status === 'completed')
+                .reduce((sum, booking) => sum + parseFloat(booking.amount.replace('P ', '')), 0);
+            
+            document.getElementById('total-bookings').textContent = totalBookings;
+            document.getElementById('in-progress').textContent = inProgress;
+            document.getElementById('completed').textContent = completed;
+            document.getElementById('revenue').textContent = `P ${revenue}`;
+        }
+
+        // Filter bookings
+        function filterBookings(filter) {
+            const filterButtons = document.querySelectorAll('.filters .filter-btn');
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (filter === 'all') {
+                filteredBookings = [...allBookings];
+            } else if (filter === 'pending') {
+                filteredBookings = allBookings.filter(b => b.status === 'pending');
+            } else if (filter === 'confirmed') {
+                filteredBookings = allBookings.filter(b => b.status === 'confirmed');
+            } else if (filter === 'in-progress') {
+                filteredBookings = allBookings.filter(b => b.status === 'in-progress');
+            } else if (filter === 'today') {
+                const today = new Date().toDateString();
+                filteredBookings = allBookings.filter(b => {
+                    const bookingDate = new Date(b.datetime).toDateString();
+                    return bookingDate === today;
+                });
+            } else if (filter === 'week') {
+                const oneWeekAgo = new Date();
+                oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+                filteredBookings = allBookings.filter(b => new Date(b.datetime) >= oneWeekAgo);
+            } else if (filter === 'month') {
+                const oneMonthAgo = new Date();
+                oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+                filteredBookings = allBookings.filter(b => new Date(b.datetime) >= oneMonthAgo);
+            }
+            
+            renderBookings();
+        }
+
         // View booking details
         function viewBooking(bookingId) {
-            const booking = bookings[bookingId];
+            const booking = allBookings.find(b => b.id === bookingId);
             if (booking) {
                 document.getElementById('modalBookingId').textContent = '#' + bookingId;
                 document.getElementById('modalCustomer').textContent = booking.customer;
                 document.getElementById('modalPhone').textContent = booking.phone;
-                document.getElementById('modalEmail').textContent = booking.email;
+                document.getElementById('modalEmail').textContent = booking.email || 'N/A';
                 document.getElementById('modalService').textContent = booking.service;
                 document.getElementById('modalVehicle').textContent = booking.vehicle;
                 document.getElementById('modalDateTime').textContent = booking.datetime;
                 document.getElementById('modalStatus').textContent = booking.status;
-                document.getElementById('modalCafeOrder').textContent = booking.cafeOrder;
-                document.getElementById('modalRequests').textContent = booking.requests;
+                document.getElementById('modalCafeOrder').textContent = booking.cafeOrder || 'None';
+                document.getElementById('modalRequests').textContent = booking.requests || 'None';
                 document.getElementById('modalAmount').textContent = booking.amount;
                 
                 document.getElementById('bookingModal').style.display = 'flex';
             }
         }
-        
+
+        // Update booking status
+        function updateStatus(bookingId, status) {
+            const bookingIndex = allBookings.findIndex(b => b.id === bookingId);
+            if (bookingIndex !== -1) {
+                allBookings[bookingIndex].status = status;
+                saveBookings();
+                loadBookings();
+                
+                let statusText = status;
+                if (status === 'in-progress') statusText = 'in progress';
+                
+                alert(`Booking #${bookingId} status has been updated to ${statusText}.`);
+            }
+        }
+
         // Close modal
         function closeModal() {
             document.getElementById('bookingModal').style.display = 'none';
         }
-        
-        // Update booking status
-        function updateStatus(bookingId, status) {
-            // In a real application, this would update the database
-            // For demo purposes, we'll just show an alert
-            let statusText = '';
-            switch(status) {
-                case 'confirmed':
-                    statusText = 'confirmed';
-                    break;
-                case 'in-progress':
-                    statusText = 'in progress';
-                    break;
-                case 'completed':
-                    statusText = 'completed';
-                    break;
-                case 'cancelled':
-                    statusText = 'cancelled';
-                    break;
-            }
-            
-            alert(`Booking #${bookingId} status has been updated to ${statusText}.`);
-            
-            // Refresh the page to show updated status (in real app, would update dynamically)
-            setTimeout(() => {
-                location.reload();
-            }, 1000);
-        }
-        
+
         // Edit booking
         function editBooking() {
             alert('Edit booking feature would open here.');
         }
-        
-        // Close modal if clicked outside
-        window.onclick = function(event) {
-            const modal = document.getElementById('bookingModal');
-            if (event.target === modal) {
-                closeModal();
-            }
-        };
-        
-        // Simulate real-time updates (in a real app, this would use WebSockets)
-        setInterval(() => {
-            // This would fetch new bookings and update the UI
-            console.log('Checking for new bookings...');
-        }, 30000);
+
+        // Simulate receiving a new booking (for testing)
+        function simulateNewBooking() {
+            const newBooking = {
+                id: 'TW' + Date.now(),
+                customer: 'Test Customer',
+                phone: '+267 71 234 567',
+                email: 'test@example.com',
+                service: 'Ultimate Package',
+                vehicle: 'Toyota Corolla (ABC 123 EC)',
+                datetime: new Date().toLocaleString(),
+                status: 'pending',
+                cafeOrder: 'Cappuccino, Croissant',
+                requests: 'Please focus on interior cleaning',
+                amount: 'P 399'
+            };
+            
+            allBookings.unshift(newBooking);
+            saveBookings();
+            loadBookings();
+            
+            // Show notification
+            alert(`New booking received: #${newBooking.id}`);
+        }
+
+        // Check for new bookings every 30 seconds
+        setInterval(loadBookings, 30000);
+
+        // Initialize the dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBookings();
+            
+            // For demo purposes - simulate a new booking every 2 minutes
+            // setInterval(simulateNewBooking, 120000);
+        });
     </script>
 </body>
 </html>
