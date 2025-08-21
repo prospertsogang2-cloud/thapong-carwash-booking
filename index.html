@@ -503,52 +503,71 @@
                 return;
             }
             
-            bookingState.customerInfo = { name, phone, vehicle, time };
-            bookingState.status = 'scheduled';
-
-            // After creating the booking object in bookService() function
-// Add this code:
-
-// Get existing bookings from local storage or initialize empty array
-let existingBookings = JSON.parse(localStorage.getItem('thapongBookings')) || [];
-
-// Add new booking to the array
-existingBookings.unshift(booking);
-
-// Save back to local storage
-localStorage.setItem('thapongBookings', JSON.stringify(existingBookings));
-
-// Show confirmation
-showNotification('Your wash and dine experience has been booked! Our team will confirm shortly.');
-
-// Reset the form
-document.getElementById('name').value = '';
-document.getElementById('phone').value = '';
-document.getElementById('vehicle').value = '';
-document.getElementById('time').value = '';
-
-// Reset service selection
-bookingState.service = null;
-document.querySelectorAll('.service-option.selected').forEach(item => {
-    item.classList.remove('selected');
-});
-
-// Reset cafe items selection
-bookingState.cafeItems = [];
-document.querySelectorAll('.cafe-item.selected').forEach(item => {
-    item.classList.remove('selected');
-});
+            // Create booking object
+            const booking = {
+                id: 'TW' + Date.now(),
+                customer: name,
+                phone: phone,
+                email: '', // You can add email field later
+                service: getServiceName(bookingState.service),
+                vehicle: vehicle,
+                datetime: time,
+                status: 'pending',
+                cafeOrder: bookingState.cafeItems.map(item => getItemName(item)).join(', '),
+                requests: '', // You can add special requests field later
+                amount: 'P ' + calculateTotal()
+            };
+            
+            // Save to localStorage
+            saveBooking(booking);
+            
             // Show booking confirmation
-            showNotification('Your wash and dine experience has been booked!');
+            showNotification('Your wash and dine experience has been booked! Our team will confirm shortly.');
             
             // Update UI to show status
             renderStatus();
             
-            // Simulate starting the service after a delay
-            setTimeout(startService, 3000);
+            // Reset the form
+            resetForm();
         }
         
-        // Start the service
+        // Save booking to localStorage
+        function saveBooking(booking) {
+            // Get existing bookings from local storage or initialize empty array
+            let existingBookings = JSON.parse(localStorage.getItem('thapongBookings')) || [];
+            
+            // Add new booking to the array
+            existingBookings.unshift(booking);
+            
+            // Save back to local storage
+            localStorage.setItem('thapongBookings', JSON.stringify(existingBookings));
+        }
+        
+        // Reset the form after booking
+        function resetForm() {
+            document.getElementById('name').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('vehicle').value = '';
+            
+            // Set default datetime to current time + 30 minutes
+            const now = new Date();
+            now.setMinutes(now.getMinutes() + 30);
+            document.getElementById('time').value = now.toISOString().slice(0, 16);
+            
+            // Reset service selection
+            bookingState.service = null;
+            document.querySelectorAll('.service-option.selected').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // Reset cafe items selection
+            bookingState.cafeItems = [];
+            document.querySelectorAll('.cafe-item.selected').forEach(item => {
+                item.classList.remove('selected');
+            });
+        }
+        
+        // Start the service (for customer view only)
         function startService() {
             bookingState.status = 'in_progress';
             bookingState.timeRemaining = bookingState.totalTime;
@@ -568,14 +587,14 @@ document.querySelectorAll('.cafe-item.selected').forEach(item => {
             }, 1000);
         }
         
-        // Complete the service
+        // Complete the service (for customer view only)
         function completeService() {
             bookingState.status = 'completed';
             renderStatus();
             showNotification('Your car wash is complete and your cafe order is ready!');
         }
         
-        // Render service status
+        // Render service status (for customer view only)
         function renderStatus() {
             if (bookingState.status === 'not_started') {
                 statusContainer.innerHTML = '<p class="text-center">Your service status will appear here once booked</p>';
