@@ -299,6 +299,119 @@
             margin: 20px 0;
         }
         
+        /* New Features Styles */
+        .loyalty-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--secondary);
+            color: var(--dark);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .promotion-banner {
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        
+        .live-updates {
+            margin-top: 30px;
+        }
+        
+        .updates-feed {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .update-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .update-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        
+        .update-content {
+            padding: 15px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .btn-wait {
+            background: var(--info);
+            color: white;
+        }
+        
+        .btn-leave {
+            background: var(--success);
+            color: white;
+        }
+        
+        .loyalty-section {
+            background: linear-gradient(to right, #f8f9fa, #e9ecef);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        
+        .loyalty-stamps {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .stamp {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .stamp.earned {
+            background: var(--secondary);
+            color: var(--dark);
+        }
+        
         @media (max-width: 768px) {
             .app-content {
                 grid-template-columns: 1fr;
@@ -311,6 +424,14 @@
             .logo {
                 font-size: 2.2rem;
             }
+            
+            .loyalty-badge {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin: 10px auto;
+                width: fit-content;
+            }
         }
     </style>
 </head>
@@ -320,7 +441,19 @@
             <div class="logo">THAPONG <span>CAR WASH</span></div>
             <div class="tagline">WASH-AND-DINE ECOSYSTEM</div>
             <p>Integrated with Thabong Cafe for your convenience</p>
+            
+            <!-- Loyalty Points Badge -->
+            <div class="loyalty-badge">
+                <i class="fas fa-coins"></i>
+                <span id="loyalty-points">0</span> Points
+            </div>
         </header>
+        
+        <!-- Promotion Banner -->
+        <div class="promotion-banner" id="promotion-banner">
+            <h3><i class="fas fa-gift"></i> Wash & Wine Wednesday!</h3>
+            <p>Get a free glass of wine with any premium wash today</p>
+        </div>
         
         <div class="app-content">
             <div class="left-panel">
@@ -390,6 +523,22 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Loyalty Program Section -->
+                <div class="loyalty-section">
+                    <h2 class="card-title">Loyalty Rewards</h2>
+                    <p>Earn stamps with every wash and redeem rewards!</p>
+                    
+                    <div class="loyalty-stamps">
+                        <div class="stamp earned">1</div>
+                        <div class="stamp earned">2</div>
+                        <div class="stamp earned">3</div>
+                        <div class="stamp">4</div>
+                        <div class="stamp">5</div>
+                    </div>
+                    
+                    <p>After 5 washes, get a free express exterior wash!</p>
+                </div>
             </div>
             
             <div class="right-panel">
@@ -424,6 +573,46 @@
                     <div id="status-container">
                         <p class="text-center">Your service status will appear here once booked</p>
                     </div>
+                    
+                    <!-- Action Buttons (will be shown when car is ready) -->
+                    <div id="action-buttons" class="action-buttons" style="display: none;">
+                        <button class="action-btn btn-wait" onclick="chooseToWait()">
+                            <i class="fas fa-coffee"></i> Wait at Cafe
+                        </button>
+                        <button class="action-btn btn-leave" onclick="chooseToLeave()">
+                            <i class="fas fa-car"></i> Pick Up Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Live Updates Section -->
+        <div class="live-updates">
+            <h2 class="card-title">Live from Thapong</h2>
+            <div class="updates-feed">
+                <div class="update-card">
+                    <img src="https://images.unsplash.com/photo-1553440569-bcc63803a83d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Car Show">
+                    <div class="update-content">
+                        <h3>Car of the Week</h3>
+                        <p>Beautiful BMW detail job completed this morning!</p>
+                    </div>
+                </div>
+                
+                <div class="update-card">
+                    <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Team Photo">
+                    <div class="update-content">
+                        <h3>Meet Our Team</h3>
+                        <p>Our expert detailers ready to make your car shine!</p>
+                    </div>
+                </div>
+                
+                <div class="update-card">
+                    <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Cafe Offer">
+                    <div class="update-content">
+                        <h3>New at Thabong Cafe</h3>
+                        <p>Try our new specialty coffee blends while you wait!</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -442,13 +631,75 @@
             status: 'not_started',
             progress: 0,
             timeRemaining: 0,
-            totalTime: 0
+            totalTime: 0,
+            loyaltyPoints: 0,
+            stamps: 3
         };
         
         // DOM Elements
         const statusContainer = document.getElementById('status-container');
         const notification = document.getElementById('notification');
         const notificationText = document.getElementById('notification-text');
+        const actionButtons = document.getElementById('action-buttons');
+        const loyaltyPointsEl = document.getElementById('loyalty-points');
+        const promotionBanner = document.getElementById('promotion-banner');
+        
+        // Initialize loyalty points
+        function initLoyalty() {
+            const savedPoints = localStorage.getItem('thapongLoyaltyPoints');
+            const savedStamps = localStorage.getItem('thapongLoyaltyStamps');
+            
+            if (savedPoints) {
+                bookingState.loyaltyPoints = parseInt(savedPoints);
+                loyaltyPointsEl.textContent = bookingState.loyaltyPoints;
+            }
+            
+            if (savedStamps) {
+                bookingState.stamps = parseInt(savedStamps);
+                updateStampsDisplay();
+            }
+        }
+        
+        // Update stamps display
+        function updateStampsDisplay() {
+            const stamps = document.querySelectorAll('.stamp');
+            stamps.forEach((stamp, index) => {
+                if (index < bookingState.stamps) {
+                    stamp.classList.add('earned');
+                } else {
+                    stamp.classList.remove('earned');
+                }
+            });
+        }
+        
+        // Add loyalty points
+        function addLoyaltyPoints(points) {
+            bookingState.loyaltyPoints += points;
+            localStorage.setItem('thapongLoyaltyPoints', bookingState.loyaltyPoints);
+            loyaltyPointsEl.textContent = bookingState.loyaltyPoints;
+            
+            // Show notification
+            showNotification(`You earned ${points} loyalty points!`);
+        }
+        
+        // Add stamp
+        function addStamp() {
+            if (bookingState.stamps < 5) {
+                bookingState.stamps++;
+                localStorage.setItem('thapongLoyaltyStamps', bookingState.stamps);
+                updateStampsDisplay();
+                
+                if (bookingState.stamps === 5) {
+                    showNotification("You've earned 5 stamps! Free wash on your next visit!");
+                    // Reset stamps
+                    setTimeout(() => {
+                        bookingState.stamps = 0;
+                        localStorage.setItem('thapongLoyaltyStamps', bookingState.stamps);
+                        updateStampsDisplay();
+                    }, 5000);
+                }
+            }
+        }
         
         // Select a car wash service
         function selectService(element, serviceType) {
@@ -527,8 +778,15 @@
             // Update UI to show status
             renderStatus();
             
+            // Add loyalty points for booking
+            addLoyaltyPoints(10);
+            addStamp();
+            
             // Reset the form
             resetForm();
+            
+            // Start checking for status updates
+            startStatusCheck();
         }
         
         // Save booking to localStorage
@@ -567,34 +825,44 @@
             });
         }
         
-        // Start the service (for customer view only)
-        function startService() {
-            bookingState.status = 'in_progress';
-            bookingState.timeRemaining = bookingState.totalTime;
-            renderStatus();
-            
-            // Start the countdown timer
-            const countdown = setInterval(() => {
-                bookingState.timeRemaining--;
-                bookingState.progress = ((bookingState.totalTime - bookingState.timeRemaining) / bookingState.totalTime) * 100;
+        // Start checking for status updates
+        function startStatusCheck() {
+            // Check every 10 seconds for updates
+            setInterval(() => {
+                const bookings = JSON.parse(localStorage.getItem('thapongBookings')) || [];
+                const latestBooking = bookings[0]; // Get the most recent booking
                 
-                renderStatus();
-                
-                if (bookingState.timeRemaining <= 0) {
-                    clearInterval(countdown);
-                    completeService();
+                if (latestBooking && latestBooking.status !== bookingState.status) {
+                    bookingState.status = latestBooking.status;
+                    renderStatus();
+                    
+                    // Show notification for status changes
+                    if (latestBooking.status === 'in progress') {
+                        showNotification('Your car wash has started!');
+                    } else if (latestBooking.status === 'completed') {
+                        showNotification('Your car is ready! What would you like to do?');
+                        actionButtons.style.display = 'flex';
+                    }
                 }
-            }, 1000);
+            }, 10000);
         }
         
-        // Complete the service (for customer view only)
-        function completeService() {
-            bookingState.status = 'completed';
-            renderStatus();
-            showNotification('Your car wash is complete and your cafe order is ready!');
+        // Choose to wait at cafe
+        function chooseToWait() {
+            showNotification("Great! Enjoy your time at Thabong Cafe. We'll notify you if anything changes.");
+            actionButtons.style.display = 'none';
         }
         
-        // Render service status (for customer view only)
+        // Choose to pick up now
+        function chooseToLeave() {
+            showNotification("Your car is waiting at the exit. Thank you for choosing Thapong!");
+            actionButtons.style.display = 'none';
+            
+            // Add extra loyalty points for quick pickup
+            addLoyaltyPoints(5);
+        }
+        
+        // Render service status
         function renderStatus() {
             if (bookingState.status === 'not_started') {
                 statusContainer.innerHTML = '<p class="text-center">Your service status will appear here once booked</p>';
@@ -603,7 +871,15 @@
             
             let statusHTML = '';
             
-            if (bookingState.status === 'scheduled') {
+            if (bookingState.status === 'pending') {
+                statusHTML = `
+                    <div class="text-center">
+                        <i class="fas fa-clock" style="font-size: 3rem; color: var(--warning);"></i>
+                        <h3>Booking Received</h3>
+                        <p>We're confirming your booking. You'll receive an update soon.</p>
+                    </div>
+                `;
+            } else if (bookingState.status === 'confirmed') {
                 statusHTML = `
                     <div class="text-center">
                         <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--success);"></i>
@@ -611,7 +887,7 @@
                         <p>Your wash and dine experience is scheduled</p>
                     </div>
                 `;
-            } else if (bookingState.status === 'in_progress') {
+            } else if (bookingState.status === 'in progress') {
                 const minutes = Math.floor(bookingState.timeRemaining / 60);
                 const seconds = bookingState.timeRemaining % 60;
                 
@@ -663,8 +939,6 @@
                             <p>Cafe Order: ${bookingState.cafeItems.map(item => getItemName(item)).join(', ') || 'None'}</p>
                             <p>Total: P ${calculateTotal()}.00</p>
                         </div>
-                        
-                        <button class="btn" style="margin-top: 20px;">Rate Your Experience</button>
                     </div>
                 `;
             }
@@ -724,7 +998,7 @@
             
             setTimeout(() => {
                 notification.classList.remove('show');
-            }, 3000);
+            }, 5000);
         }
         
         // Initialize the app
@@ -733,6 +1007,41 @@
             const now = new Date();
             now.setMinutes(now.getMinutes() + 30);
             document.getElementById('time').value = now.toISOString().slice(0, 16);
+            
+            // Initialize loyalty system
+            initLoyalty();
+            
+            // Rotate promotions
+            const promotions = [
+                {
+                    title: "Wash & Wine Wednesday!",
+                    text: "Get a free glass of wine with any premium wash today",
+                    color: "linear-gradient(to right, #0a4a8d, #c44949)"
+                },
+                {
+                    title: "GBV Awareness Month",
+                    text: "10% of proceeds this week donated to GBV shelters",
+                    color: "linear-gradient(to right, #c44949, #e6af2e)"
+                },
+                {
+                    title: "Car Show Next Saturday!",
+                    text: "Register your vehicle for our monthly car show",
+                    color: "linear-gradient(to right, #0a4a8d, #17a2b8)"
+                }
+            ];
+            
+            let currentPromotion = 0;
+            
+            // Change promotion every 10 seconds
+            setInterval(() => {
+                promotionBanner.innerHTML = `
+                    <h3><i class="fas fa-gift"></i> ${promotions[currentPromotion].title}</h3>
+                    <p>${promotions[currentPromotion].text}</p>
+                `;
+                promotionBanner.style.background = promotions[currentPromotion].color;
+                
+                currentPromotion = (currentPromotion + 1) % promotions.length;
+            }, 10000);
         }
         
         // Initialize when page loads
